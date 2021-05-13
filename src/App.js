@@ -39,9 +39,10 @@ class App extends React.Component {
         <header className="">
           <div>
               <div>
-                <QuoteBlock 
-                  root="ZC"
-                />
+                <QuoteBlock root="ZC"/>
+                <QuoteBlock root="ZS"/>
+                <QuoteBlock root="ZW"/>
+                <QuoteBlock root="CL"/>
               </div>
           </div>
         </header>

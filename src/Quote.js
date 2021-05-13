@@ -1,56 +1,65 @@
-import React from 'react';
+import React, {useState} from 'react';
 
-export default class Quote extends React.Component {
+export default function Quote(props) {
 
-    constructor(props) {
-        super(props);
-        
-        this.state = {
-            symbol: props.symbol,
-            open: props.open,
-            high: props.high,
-            low: props.low,
-            last: props.last,
-            delta: props.last - props.open
-        }
-    }
+    // constructor(props) {
+    //     super(props);
 
-    componentDidMount() {
-        const ws = this.props.ws;
+    //     ws = props.ws;
+    // }
+
+    const ws = props.ws;
+
+    const [state, setState] = React.useState({
+        open: "?",
+        high: "?",
+        low: "?",
+        last: "?",
+        delta: "?"
+    });
+
+    React.useEffect(() => {
         ws.onmessage = (evt) => {
             // console.log("new event: " + Date().split(" ")[4]);
             // console.log(evt.data);
             let curEvt = JSON.parse(evt.data.replace(/'/g, "\""));
             // console.table(curEvt);
-            if (curEvt.symbol === this.props.symbol) {
-                this.updatePrices(curEvt);
+            if (curEvt.symbol === props.symbol) {
+                updatePrices(curEvt);
             }
         }
-    }
+    })
 
-    updatePrices(evt) {
-        console.log("updatePrice()");
-        this.setState({
+    // componentDidMount() {
+  
+    // }
+    
+
+    function updatePrices(evt) {
+        console.log("updatePrice() : " + evt.symbol);
+        // this.setState({
+        //     open: evt.px_open,
+        //     high: evt.px_high,
+        //     low: evt.px_low,
+        //     last: evt.px_last,
+        //     delta: evt.px_last - evt.px_open
+        // })
+        setState({
             open: evt.px_open,
             high: evt.px_high,
             low: evt.px_low,
             last: evt.px_last,
             delta: evt.px_last - evt.px_open
-        })
-        // this.props.open = evt.px_open;
-        // this.props.high = evt.px_high;
-        // this.props.low = evt.px_low;
-        // this.props.last = evt.px_last;
-        // this.props.delta = evt.px_last - evt.px_open;
+        });
     }
 
-    logInfo() {
-        console.log(`SYMBOL: ${this.props.symbol}, LAST: ${this.props.last}`);
+    function logInfo() {
+        console.log(`SYMBOL: ${state.symbol}, LAST: ${state.last}`);
     }
 
 
     // gain = GREEN , loss = RED, neutral = GRAY
-    getColor(delta) {
+    function getColor(delta) {
         if (delta < 0) {
             return {color: 'red'};
         } else if (delta > 0) {
@@ -60,20 +69,20 @@ export default class Quote extends React.Component {
         }
     }
 
-    render() {
-        return (
-            <div className="myItem">
-                <h3 style={{textAlign: "center"}}>{this.state.symbol}</h3>
-                <p><pre> O: {this.state.open}</pre></p>
-                <p><pre> H: {this.state.high}</pre></p>
-                <p><pre> L: {this.state.low}</pre></p>
-                <p>PX: <b>{this.state.last}</b></p>
-                <p><pre> Δ: <span style={this.getColor(this.state.delta)}>{
-                        this.state.delta > 0 ? 
-                            "+"+this.state.delta : this.state.delta
-                        }</span></pre>
-                </p>
-            </div>
-        );
-    }
+
+    return (
+        <div className="myItem">
+            <h3 style={{textAlign: "center"}}>{props.symbol}</h3>
+            <p><pre> O: {state.open}</pre></p>
+            <p><pre> H: {state.high}</pre></p>
+            <p><pre> L: {state.low}</pre></p>
+            <p>PX: <b>{state.last}</b></p>
+            <p><pre> Δ: <span style={getColor(state.delta)}>{
+                    state.delta > 0 ? 
+                        "+"+state.delta : state.delta
+                    }</span></pre>
+            </p>
+        </div>
+    );    
 }
+    
