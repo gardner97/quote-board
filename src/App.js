@@ -1,25 +1,54 @@
-import logo from './logo.svg';
 import './App.css';
+//import QuoteBoard from './QuoteBoard';
+import Quote from './Quote';
+import QuoteBlock from './QuoteBlock';
+import React from 'react';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+// var ws = new WebSocket('ws://localhost:8080');
+
+// ws.onopen = () => {
+//     console.log("CONNECTED");
+// };
+
+
+
+
+class App extends React.Component {
+
+  
+  // updateComp = (evt) => {
+  //   this.quoteElement.current.updatePrices(evt);
+  // };
+
+  componentDidMount() {
+    // ws.onmessage = (evt) => {
+    //   console.log("new event: " + Date().split(" ")[4])
+    //   console.log(evt.data)
+    //   let curEvt = JSON.parse(evt.data.replace(/'/g, "\""))
+    //   console.table(curEvt)
+  
+      
+    // }
+  }
+
+  
+  render() {
+
+    return (
+      <div className="App">
+        <header className="">
+          <div>
+              <div>
+                <QuoteBlock 
+                  root="ZC"
+                />
+              </div>
+          </div>
+        </header>
+      </div>
+    );
+  }
+  
 }
 
 export default App;

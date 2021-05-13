@@ -36,3 +36,28 @@
     transform: rotate(360deg);
   }
 }
+
+.myStyle {
+  background-color: white;
+}
+
+.myItem {
+  width: 110px;
+  height: 205px;
+  margin: 1px;
+  border-style: ridge;
+  background-color: lightgrey;
+  font-family: 'Courier New', Courier, monospace;
+  text-align: left;
+}
+
+.row {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+
+.column {
+  display: flex;
+  flex-direction: column;
+}
