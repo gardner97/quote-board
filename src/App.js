@@ -1,8 +1,9 @@
 import './App.css';
 //import QuoteBoard from './QuoteBoard';
-import Quote from './Quote';
+//import Quote from './Quote';
 import QuoteBlock from './QuoteBlock';
 import React from 'react';
+
 
 // var ws = new WebSocket('ws://localhost:8080');
 
@@ -39,9 +40,6 @@ class App extends React.Component {
         <header className="">
           <div>
               <div>
-                <QuoteBlock root="ZC"/>
-                <QuoteBlock root="ZS"/>
-                <QuoteBlock root="ZW"/>
                 <QuoteBlock root="CL"/>
               </div>
           </div>

@@ -38,3 +38,5 @@ rl.on("line", (line) => {
 py.stderr.on("data", (data) => {
     console.error(data.toString());
 });
+
+export default wss;
