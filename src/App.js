@@ -40,7 +40,7 @@ class App extends React.Component {
         <header className="">
           <div>
               <div>
-                <QuoteBlock root="CL"/>
+                <QuoteBlock root="GC"/>
               </div>
           </div>
         </header>
