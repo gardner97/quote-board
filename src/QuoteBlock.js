@@ -28,26 +28,11 @@ export default function QuoteBlock(props) {
     //     };
     // }
     const [state, setState] = React.useState({
-        m0_high: "?",
-        m0_open: "?",
-        m0_low: "?",
-        m0_last: "?",
-        m1_high: "?",
-        m1_open: "?",
-        m1_low: "?",
-        m1_last: "?",
-        m2_high: "?",
-        m2_open: "?",
-        m2_low: "?",
-        m2_last: "?",
-        m3_high: "?",
-        m3_open: "?",
-        m3_low: "?",
-        m3_last: "?",
-        m4_high: "?",
-        m4_open: "?",
-        m4_low: "?",
-        m4_last: "?"
+        m0: {high: "?", open: "?", low: "?", last: "?"},
+        m1: {high: "?", open: "?", low: "?", last: "?"},
+        m2: {high: "?", open: "?", low: "?", last: "?"},
+        m3: {high: "?", open: "?", low: "?", last: "?"},
+        m4: {high: "?", open: "?", low: "?", last: "?"}
     });
 
 
@@ -162,122 +147,62 @@ export default function QuoteBlock(props) {
                 switch (m) {
                     case (m0):
                         setState({
-                            m0_high: curEvt.px_high,
-                            m0_open: curEvt.px_open,
-                            m0_low:  curEvt.px_low,
-                            m0_last: curEvt.px_last,
-                            m1_high: state.m1_high,
-                            m1_open: state.m1_open,
-                            m1_low:  state.m1_low,
-                            m1_last: state.m1_last,
-                            m2_high: state.m2_high,
-                            m2_open: state.m2_open,
-                            m2_low:  state.m2_low,
-                            m2_last: state.m2_last,
-                            m3_high: state.m3_high,
-                            m3_open: state.m3_open,
-                            m3_low:  state.m3_low,
-                            m3_last: state.m3_last,
-                            m4_high: state.m4_high,
-                            m4_open: state.m4_open,
-                            m4_low:  state.m4_low,
-                            m4_last: state.m4_last
+                            m0: {high: curEvt.px_high,
+                                open: curEvt.px_open,
+                                low:  curEvt.px_low,
+                                last: curEvt.px_last},
+                            m1: state.m1,
+                            m2: state.m2,
+                            m3: state.m3,
+                            m4: state.m4
                         });
                         break;
                     case (m1):
                         setState({
-                            m0_high: state.m0_high,
-                            m0_open: state.m0_open,
-                            m0_low:  state.m0_low,
-                            m0_last: state.m0_last,
-                            m1_high: curEvt.px_high,
-                            m1_open: curEvt.px_open,
-                            m1_low:  curEvt.px_low,
-                            m1_last: curEvt.px_last,
-                            m2_high: state.m2_high,
-                            m2_open: state.m2_open,
-                            m2_low:  state.m2_low,
-                            m2_last: state.m2_last,
-                            m3_high: state.m3_high,
-                            m3_open: state.m3_open,
-                            m3_low:  state.m3_low,
-                            m3_last: state.m3_last,
-                            m4_high: state.m4_high,
-                            m4_open: state.m4_open,
-                            m4_low:  state.m4_low,
-                            m4_last: state.m4_last
+                            m0: state.m0,
+                            m1: {high: curEvt.px_high,
+                                open: curEvt.px_open,
+                                low:  curEvt.px_low,
+                                last: curEvt.px_last},
+                            m2: state.m2,
+                            m3: state.m3,
+                            m4: state.m4
                         });
                         break;
                     case (m2):
                         setState({
-                            m0_high: state.m0_high,
-                            m0_open: state.m0_open,
-                            m0_low:  state.m0_low,
-                            m0_last: state.m0_last,
-                            m1_high: state.m1_high,
-                            m1_open: state.m1_open,
-                            m1_low:  state.m1_low,
-                            m1_last: state.m1_last,
-                            m2_high: curEvt.px_high,
-                            m2_open: curEvt.px_open,
-                            m2_low:  curEvt.px_low,
-                            m2_last: curEvt.px_last,
-                            m3_high: state.m3_high,
-                            m3_open: state.m3_open,
-                            m3_low:  state.m3_low,
-                            m3_last: state.m3_last,
-                            m4_high: state.m4_high,
-                            m4_open: state.m4_open,
-                            m4_low:  state.m4_low,
-                            m4_last: state.m4_last
+                            m0: state.m0,
+                            m1: state.m1,
+                            m2: {high: curEvt.px_high,
+                                open: curEvt.px_open,
+                                low:  curEvt.px_low,
+                                last: curEvt.px_last},
+                            m3: state.m3,
+                            m4: state.m4
                         });
                         break;
                     case (m3):
                         setState({
-                            m0_high: state.m0_high,
-                            m0_open: state.m0_open,
-                            m0_low:  state.m0_low,
-                            m0_last: state.m0_last,
-                            m1_high: state.m1_high,
-                            m1_open: state.m1_open,
-                            m1_low:  state.m1_low,
-                            m1_last: state.m1_last,
-                            m2_high: state.m2_high,
-                            m2_open: state.m2_open,
-                            m2_low:  state.m2_low,
-                            m2_last: state.m2_last,
-                            m3_high: curEvt.px_high,
-                            m3_open: curEvt.px_open,
-                            m3_low:  curEvt.px_low,
-                            m3_last: curEvt.px_last,
-                            m4_high: state.m4_high,
-                            m4_open: state.m4_open,
-                            m4_low:  state.m4_low,
-                            m4_last: state.m4_last
+                            m0: state.m0,
+                            m1: state.m1,
+                            m2: state.m2,
+                            m3: {high: curEvt.px_high,
+                                open: curEvt.px_open,
+                                low:  curEvt.px_low,
+                                last: curEvt.px_last},
+                            m4: state.m4
                         });
                         break;
                     case (m4):
                         setState({
-                            m0_high: state.m0_high,
-                            m0_open: state.m0_open,
-                            m0_low:  state.m0_low,
-                            m0_last: state.m0_last,
-                            m1_high: state.m1_high,
-                            m1_open: state.m1_open,
-                            m1_low:  state.m1_low,
-                            m1_last: state.m1_last,
-                            m2_high: state.m2_high,
-                            m2_open: state.m2_open,
-                            m2_low:  state.m2_low,
-                            m2_last: state.m2_last,
-                            m3_high: state.m3_high,
-                            m3_open: state.m3_open,
-                            m3_low:  state.m3_low,
-                            m3_last: state.m3_last,
-                            m4_high: curEvt.px_high,
-                            m4_open: curEvt.px_open,
-                            m4_low:  curEvt.px_low,
-                            m4_last: curEvt.px_last,
+                            m0: state.m0,
+                            m1: state.m1,
+                            m2: state.m2,
+                            m3: state.m3,
+                            m4: {high: curEvt.px_high,
+                                open: curEvt.px_open,
+                                low:  curEvt.px_low,
+                                last: curEvt.px_last}
                         });
                         break;
                     default:
@@ -291,11 +216,11 @@ export default function QuoteBlock(props) {
     console.log("QUOTEBLOCK RENDER")
     return (
         <div className="row" >
-            <Quote symbol={String(props.root + m0)} open={state.m0_open} high={state.m0_high} low={state.m0_low} last={state.m0_last} delta={state.m0_last - state.m0_open}/>
-            <Quote symbol={String(props.root + m1)} open={state.m1_open} high={state.m1_high} low={state.m1_low} last={state.m1_last} delta={state.m1_last - state.m1_open}/>
-            <Quote symbol={String(props.root + m2)} open={state.m2_open} high={state.m2_high} low={state.m2_low} last={state.m2_last} delta={state.m2_last - state.m2_open}/>
-            <Quote symbol={String(props.root + m3)} open={state.m3_open} high={state.m3_high} low={state.m3_low} last={state.m3_last}  delta={state.m3_last - state.m3_open}/>
-            <Quote symbol={String(props.root + m4)} open={state.m4_open} high={state.m4_high} low={state.m4_low} last={state.m4_last} delta={state.m4_last - state.m4_open}/>
+            <Quote symbol={String(props.root + m0)} open={state.m0.open} high={state.m0.high} low={state.m0.low} last={state.m0.last} delta={state.m0.last - state.m0.open}/>
+            <Quote symbol={String(props.root + m1)} open={state.m1.open} high={state.m1.high} low={state.m1.low} last={state.m1.last} delta={state.m1.last - state.m1.open}/>
+            <Quote symbol={String(props.root + m2)} open={state.m2.open} high={state.m2.high} low={state.m2.low} last={state.m2.last} delta={state.m2.last - state.m2.open}/>
+            <Quote symbol={String(props.root + m3)} open={state.m3.open} high={state.m3.high} low={state.m3.low} last={state.m3.last}  delta={state.m3.last - state.m3.open}/>
+            <Quote symbol={String(props.root + m4)} open={state.m4.open} high={state.m4.high} low={state.m4.low} last={state.m4.last} delta={state.m4.last - state.m4.open}/>
         </div>
     )
 }   
