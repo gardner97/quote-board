@@ -9,7 +9,6 @@ export default function Quote(props) {
     // }
 
     //const ws = props.ws;
-    // const ws = props.ws;
 
     // ws.onopen = () => {
     //     console.log(`connected @ ${(new Date())}`);

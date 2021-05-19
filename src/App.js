@@ -1,7 +1,7 @@
 import './App.css';
-//import QuoteBoard from './QuoteBoard';
+import QuoteBoard from './QuoteBoard';
 //import Quote from './Quote';
-import QuoteBlock from './QuoteBlock';
+//import QuoteBlock from './QuoteBlock';
 import React from 'react';
 
 
@@ -40,7 +40,7 @@ class App extends React.Component {
         <header className="">
           <div>
               <div>
-                <QuoteBlock root="GC"/>
+                <QuoteBoard roots={["ZC"]} />
               </div>
           </div>
         </header>
