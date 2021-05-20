@@ -1,13 +1,15 @@
 import React from 'react'
 //import Quote from './Quote'
 import QuoteBlock from './QuoteBlock'
+const _ = require('lodash');
 
 //      indices:  [ 0,  1,  2,  3,  4,  5,  6,  7,  8,  9, 10, 11 ]
 const allMonths = ['F','G','H','J','K','M','N','Q','U','V','X','Z'];
 
 // Trading Months (the months with available contracts to trade on CME for various commodities):
-const c_months = ["H","K","N","U","Z"]; // corn, wheat, oats
-const s_months = ["F","H","K","N","Q","U","X"]; // soybeans/meal/oil
+const grain_months = ["H","K","N","U","Z"]; // corn, wheat, oats
+const bean_months = ["F","H","K","N","Q","U","X"]; // soybeans/meal/oil
+const gold_months = ["G","J","M","Q","V","Z"]; // gold
 
 const D = new Date();
 const WS = new WebSocket('ws://localhost:8080');
@@ -15,7 +17,7 @@ const WS = new WebSocket('ws://localhost:8080');
 
 // get month letter with year number (ex: May 2021 -> K1)
 function getCurContract() {
-    return (allMonths[D.getMonth()] + getCurYear());
+    return (allMonths[D.getMonth() + 1] + getCurYear());
 }
 
 
@@ -68,16 +70,18 @@ function getTradingMonths(symbol) {
         case "ZC":
         case "ZW":
         case "ZO":
-            months = c_months;
+            months = grain_months;
             break;
         case "ZS":
         case "ZM":
         case "ZL":
-            months = s_months;
+            months = bean_months;
+            break;
+        case "GC":
+            months = gold_months;
             break;
         case "CL":
         case "HO":
-        case "GC":
             months = allMonths;
             break;
         default:
@@ -101,7 +105,7 @@ function getInitRootMap(root) {
     for (let i = 0; i < tradingMonthsAr.length; i++) {
         const curSymbol = root + tradingMonthsAr[i];
         if (quotesMap.has(curSymbol)) console.error("quoteMap add ERROR -- How'd that get there??");
-        const initObj = {symbol: curSymbol, high: "?", open: "?", low: "?", px: "?"};
+        const initObj = {symbol: curSymbol, high: "?", open: "?", low: "?", px: "?", set: "?"};
         // initialize starting data as ?'s before real prices are received
         quotesMap.set(curSymbol, initObj);
     }
@@ -110,30 +114,40 @@ function getInitRootMap(root) {
 
 
 export default function QuoteBoard(props) {
-    console.log(props);
+    //console.log(props);
     
     // status:  comdtysAr["ZC"]  ->  monthsMap<"ZCK1", quoteObj>  ->  quote{symbol: , open: , high: , low: , px: }
     const [status, setStatus] = React.useState(initStatus(props.roots));
-
    
     /*
-    handle issue of React being trickt with mutability and state updates. 
+    handle issue of React being tricky with mutability and state updates. 
     I'll need to pass a new copy (use "...") instead of the same reference in order to trigger a re-render ... I think
     Tom, if you're familiar with how this works, some tips would be helpful 
     */
-    const updateStatus = () => {
-        setStatus();
-    }
+    // const updateStatus = (status) => {
+    //     setStatus({...status});
+    // }
 
     // Return an array to hold a map with all the data for various comdtys and their proper trading months
     function initStatus(roots) {
-        const rootAr = [];
+        // const rootAr = [];
+        // for (let i = 0; i < roots.length; i++) {
+        //     rootAr.push(getInitRootMap(props.roots[i]));
+        // }
+        // if (rootAr.length !== roots.length) console.error("rootAr ERROR -- lengths uneven!")
+        // //console.table(rootAr);
+        // return rootAr;
+
+        //console.table(roots);
+        const rootMap = new Map();
         for (let i = 0; i < roots.length; i++) {
-            rootAr.push(getInitRootMap(props.roots[i]));
+            //console.log(roots[i]);
+            rootMap.set(roots[i], getInitRootMap(roots[i]));
         }
-        if (rootAr.length !== roots.length) console.error("rootAr ERROR -- lengths uneven!")
-        console.table(rootAr);
-        return rootAr;
+        //console.log(rootMap.keys());
+        console.log(rootMap);
+        if (rootMap.size !== roots.length) console.error("rootMap ERROR -- lengths uneven!");
+        return rootMap;
     }
 
     // TODO: expannd to handle incoming web socket messages and then update the proper pieces of status
@@ -142,13 +156,39 @@ export default function QuoteBoard(props) {
         WS.onmessage = (evt) => {
             // console.log("new event: " + Date().split(" ")[4]);
             // console.log(evt.data);
-            let curEvt = JSON.parse(evt.data.replace(/'/g, "\""));
+            const curEvt = JSON.parse(evt.data.replace(/'/g, "\""));
+            //console.table(status);
+            // check if current comdty exists in outer map
+            if (status.has(curEvt.root)) {
+                console.log("🥸");
+                // check if current symbol/month exists in the current inner map
+                if (status.get(curEvt.root).has(curEvt.symbol)) {
+                    // update status with clone to properly trigger re-render
+                    const clone = _.cloneDeep(status);
+                    const newObj = {symbol: curEvt.symbol, open: curEvt.px_open, high: curEvt.px_high, 
+                                    low: curEvt.px_low, px: curEvt.px_last, set: curEvt.px_settle};
+                    //clone[root_i].set(curEvt.symbol, newObj);
+                    clone.get(curEvt.root).set(curEvt.symbol, newObj);
+                    console.log(`${curEvt.symbol} price update!`);
+                    console.table(newObj);
+                    //updateStatus(clone);
+                    setStatus(new Map(clone));
+                }
+            }
+            
         }
     });
 
+    let keys = [...status.keys()];
+
     return(
         <div>
-            <QuoteBlock status={status}/>
+            <QuoteBlock status={status.get(keys[0])}/>
+            <QuoteBlock status={status.get(keys[1])}/>
+            <QuoteBlock status={status.get(keys[2])}/>
+            <QuoteBlock status={status.get(keys[3])}/>
+            <QuoteBlock status={status.get(keys[4])}/>
+            <QuoteBlock status={status.get(keys[5])}/>
         </div>
     );
 

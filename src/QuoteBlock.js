@@ -18,28 +18,58 @@ function printProps(props) {
 
 // each comdty has its own QuoteBlock consisting of multiple quotes (months)
 export default function QuoteBlock(props) {
-    // props.symbols  :  comdtysAr["ZC"]  ->  monthsMap<"ZCK1", quoteObj>  ->  quote{symbol: , open: , high: , low: , px: }
+    // props.symbols  :  comdtysMap<"ZC", monthsMap>  ->  monthsMap<"ZCK1", quoteObj>  ->  quote{symbol: , open: , high: , low: , px: }
+    // update: receiving only the map now, no need for Block to see other 
     // TODO: edit delta to look at new "px_settlement" instead of open
     
     //printProps(props);
 
-    const mapAr = props.status;
-    const frontQ = mapAr[0].get("ZCK1");
-    console.table(frontQ);
+    const map = props.status;
+    console.log(map)
+    //const frontQ = mapAr[0].get("ZCK1");
+    //console.table(frontQ);
+    //console.table(mapAr);
+    const keys = [...map.keys()];
+    //console.table(mapSet)
+    console.table(map.get(keys[3]))
+
 
     return (
         <div className="row" >
-            {/* <Quote symbol={String(props.root + m0)} open={state.m0.open} high={state.m0.high} low={state.m0.low} last={state.m0.last} delta={state.m0.last - state.m0.open}/>
-            <Quote symbol={String(props.root + m1)} open={state.m1.open} high={state.m1.high} low={state.m1.low} last={state.m1.last} delta={state.m1.last - state.m1.open}/>
-            <Quote symbol={String(props.root + m2)} open={state.m2.open} high={state.m2.high} low={state.m2.low} last={state.m2.last} delta={state.m2.last - state.m2.open}/>
-            <Quote symbol={String(props.root + m3)} open={state.m3.open} high={state.m3.high} low={state.m3.low} last={state.m3.last} delta={state.m3.last - state.m3.open}/>
-            <Quote symbol={String(props.root + m4)} open={state.m4.open} high={state.m4.high} low={state.m4.low} last={state.m4.last} delta={state.m4.last - state.m4.open}/> */}
-            <Quote  symbol={frontQ.symbol}
-                    open={frontQ.open}
-                    high={frontQ.high}
-                    low={frontQ.low}
-                    last={frontQ.px}
-                    delta={frontQ.px - frontQ.open}
+            <Quote  symbol={map.get(keys[0]).symbol}
+                    open=  {map.get(keys[0]).open}
+                    high=  {map.get(keys[0]).high}
+                    low=   {map.get(keys[0]).low}
+                    last=  {map.get(keys[0]).px}
+                    delta= {map.get(keys[0]).px - map.get(keys[0]).set}
+            />
+            <Quote  symbol={map.get(keys[1]).symbol}
+                    open=  {map.get(keys[1]).open}
+                    high=  {map.get(keys[1]).high}
+                    low=   {map.get(keys[1]).low}
+                    last=  {map.get(keys[1]).px}
+                    delta= {map.get(keys[1]).px - map.get(keys[1]).set}
+            />
+            <Quote  symbol={map.get(keys[2]).symbol}
+                    open=  {map.get(keys[2]).open}
+                    high=  {map.get(keys[2]).high}
+                    low=   {map.get(keys[2]).low}
+                    last=  {map.get(keys[2]).px}
+                    delta= {map.get(keys[2]).px - map.get(keys[2]).set}
+            />
+            <Quote  symbol={map.get(keys[3]).symbol}
+                    open=  {map.get(keys[3]).open}
+                    high=  {map.get(keys[3]).high}
+                    low=   {map.get(keys[3]).low}
+                    last=  {map.get(keys[3]).px}
+                    delta= {map.get(keys[3]).px - map.get(keys[3]).set}
+            />
+            <Quote  symbol={map.get(keys[4]).symbol}
+                    open=  {map.get(keys[4]).open}
+                    high=  {map.get(keys[4]).high}
+                    low=   {map.get(keys[4]).low}
+                    last=  {map.get(keys[4]).px}
+                    delta= {map.get(keys[4]).px - map.get(keys[4]).set}
             />
         </div>
     );

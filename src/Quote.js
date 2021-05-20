@@ -1,60 +1,6 @@
-import React, {useState} from 'react';
+import React from 'react';
 
 export default function Quote(props) {
-
-    // constructor(props) {
-    //     super(props);
-
-    //     ws = props.ws;
-    // }
-
-    //const ws = props.ws;
-
-    // ws.onopen = () => {
-    //     console.log(`connected @ ${(new Date())}`);
-    // };
-
-
-
-    // React.useEffect(() => {
-    //     ws.onmessage = (evt) => {
-    //         // console.log("new event: " + Date().split(" ")[4]);
-    //         // console.log(evt.data);
-    //         let curEvt = JSON.parse(evt.data.replace(/'/g, "\""));
-    //         // console.table(curEvt);
-    //         if (curEvt.symbol === props.symbol) {
-    //             updatePrices(curEvt);
-    //         }
-    //     }
-    // })
-
-    // componentDidMount() {
-  
-    // }
-    
-
-    // function updatePrices(evt) {
-    //     console.log("updatePrice() : " + evt.symbol);
-    //     // this.setState({
-    //     //     open: evt.px_open,
-    //     //     high: evt.px_high,
-    //     //     low: evt.px_low,
-    //     //     last: evt.px_last,
-    //     //     delta: evt.px_last - evt.px_open
-    //     // })
-    //     setState({
-    //         open: evt.px_open,
-    //         high: evt.px_high,
-    //         low: evt.px_low,
-    //         last: evt.px_last,
-    //         delta: evt.px_last - evt.px_open
-    //     });
-    // }
-
-    // function logInfo() {
-    //     console.log(`SYMBOL: ${state.symbol}, LAST: ${state.last}`);
-    // }
-
 
     // gain = GREEN , loss = RED, neutral = GRAY
     function getColor(delta) {
@@ -71,16 +17,18 @@ export default function Quote(props) {
     console.log(props.symbol + " RENDER");
     return (
         <div className="myItem">
-            <h3 style={{textAlign: "center"}}>{props.symbol}</h3>
-            <p><pre> O: {props.open}</pre></p>
-            <p><pre> H: {props.high}</pre></p>
-            <p><pre> L: {props.low}</pre></p>
-            <p>PX: <b>{props.last}</b></p>
-            <p><pre> Δ: <span style={getColor(props.delta)}>{
-                    props.delta > 0 ? 
-                        "+"+props.delta : props.delta
-                    }</span></pre>
-            </p>
+            <h4 className="title">{props.symbol}</h4>
+            <div className="innerData">
+                <p className="innerData"><pre> O: <span style={getColor(props.delta)}>{props.open}</span></pre></p>
+                <p className="innerData"><pre> H: <span style={getColor(props.delta)}>{props.high}</span></pre></p>
+                <p className="innerData"><pre> L: <span style={getColor(props.delta)}>{props.low}</span></pre></p>
+                <p className="innerData">PX: <b><span style={getColor(props.delta)}>{props.last}</span></b></p>
+                <p className="innerData"><pre> Δ: <span style={getColor(props.delta)}>{
+                        props.delta > 0 ? 
+                            "+"+props.delta : props.delta
+                        }</span></pre>
+                </p>
+            </div>
         </div>
     );    
 }
