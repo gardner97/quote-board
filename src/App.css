@@ -41,7 +41,7 @@
   background-color: white;
 }
 
-.myItem {
+.quoteDefault {
   width: 110px;
   height: 140px;
   margin: 0px;
@@ -50,6 +50,87 @@
   font-family: 'Courier New', Courier, monospace;
   text-align: left;
 }
+
+.quoteLoss1 {
+  width: 110px;
+  height: 140px;
+  margin: 0px;
+  border-style: ridge;
+  background-color: #FFCCCB;
+  font-family: 'Courier New', Courier, monospace;
+  text-align: left;
+}
+
+.quoteLoss2 {
+  width: 110px;
+  height: 140px;
+  margin: 0px;
+  border-style: ridge;
+  background-color: #FC94A1;
+  font-family: 'Courier New', Courier, monospace;
+  text-align: left;
+}
+
+.quoteLoss3 {
+  width: 110px;
+  height: 140px;
+  margin: 0px;
+  border-style: ridge;
+  background-color: #FC6C85;
+  font-family: 'Courier New', Courier, monospace;
+  text-align: left;
+}
+
+.quoteLoss4 {
+  width: 110px;
+  height: 140px;
+  margin: 0px;
+  border-style: ridge;
+  background-color: #ED2938;
+  font-family: 'Courier New', Courier, monospace;
+  text-align: left;
+}
+
+.quoteGain1 {
+  width: 110px;
+  height: 140px;
+  margin: 0px;
+  border-style: ridge;
+  background-color: #CDFFCC;
+  font-family: 'Courier New', Courier, monospace;
+  text-align: left;
+}
+
+.quoteGain2 {
+  width: 110px;
+  height: 140px;
+  margin: 0px;
+  border-style: ridge;
+  background-color: #B0F5AB;
+  font-family: 'Courier New', Courier, monospace;
+  text-align: left;
+}
+
+.quoteGain3 {
+  width: 110px;
+  height: 140px;
+  margin: 0px;
+  border-style: ridge;
+  background-color: #90EF90;
+  font-family: 'Courier New', Courier, monospace;
+  text-align: left;
+}
+
+.quoteGain4 {
+  width: 110px;
+  height: 140px;
+  margin: 0px;
+  border-style: ridge;
+  background-color: #3BCA6D;
+  font-family: 'Courier New', Courier, monospace;
+  text-align: left;
+}
+
 
 .row {
   display: flex;

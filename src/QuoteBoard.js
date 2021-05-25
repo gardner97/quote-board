@@ -7,9 +7,17 @@ const _ = require('lodash');
 const allMonths = ['F','G','H','J','K','M','N','Q','U','V','X','Z'];
 
 // Trading Months (the months with available contracts to trade on CME for various commodities):
-const grain_months = ["H","K","N","U","Z"]; // corn, wheat, oats
-const bean_months = ["F","H","K","N","Q","U","X"]; // soybeans/meal/oil
-const gold_months = ["G","J","M","Q","V","Z"]; // gold
+const bean_months = ["F","H","K","N","Q","U","X"]; // ZS
+const bp_months =   ["F","H","K","N","Q","U","V","Z"] // ZM/ZL
+const corn_months = ["F","H","K","N","U","X","Z"] // ZC
+const wocs_months = ["H","K","N","U","Z"]; // ZW/KW/MW, ZO, CC, CT, KC, HG, SI
+const rlj_months =  ["F", "H", "K", "N", "U", "X"]; // RR, LB, JO
+const feed_months = ["F", "H", "J", "K", "Q", "U", "V", "X"]; // FC
+const live_months = ["G", "J", "M", "Q", "U", "V", "Z"]; // LC
+const lean_months = ["G", "J", "K", "M", "N", "Q", "V", "Z"]; // HE
+const gold_months = ["G","J","M","Q","V","Z"]; // GC
+const plat_months = ["F","J","N","V"]; // PL
+const rate_months = ["H", "M", "U", "Z"]; // DX, EU, BP, JU, SF, CD, AD, US, TY, TU, MB, FV, ED, UB
 
 const D = new Date();
 const WS = new WebSocket('ws://localhost:8080');
@@ -62,26 +70,80 @@ function getFront(comdtyAr, curDate) {
 }
 
 
+function getChangeColor(px_last, px_settle) {
+
+}
+
+
 // return the proper set of trading months for a given symbol
 // TODO: consider expanding to dynamically handle various numbers of months instead of fixed at 5
 function getTradingMonths(symbol) {
     let months;
     switch (symbol) {
-        case "ZC":
-        case "ZW":
-        case "ZO":
-            months = grain_months;
-            break;
         case "ZS":
+            months = bean_months;
+            break;
         case "ZM":
         case "ZL":
-            months = bean_months;
+            months = bp_months;
+            break;
+        case "ZC":
+            months = corn_months;
+            break;
+        case "ZW":
+        case "KW":
+        case "MW":
+        case "ZO":
+        case "CC":
+        case "CT":
+        case "KC":
+        case "HG":
+        case "SI":
+            months = wocs_months;
+            break;
+        case "RR":
+        case "LB":
+        case "JO":
+            months = rlj_months;
+            break;
+        case "FC":
+            months = feed_months;
+            break;
+        case "LC":
+            months = live_months;
+            break;
+        case "HE":
+            months = lean_months;
             break;
         case "GC":
             months = gold_months;
             break;
+        case "PL":
+            months = plat_months;
+            break;
+        case "DX":
+        case "EU":
+        case "BP":
+        case "JU":
+        case "SF":
+        case "CD":
+        case "AD":
+        case "US":
+        case "TY":
+        case "TU":
+        case "MB":
+        case "FV":
+        case "ED":
+        case "UB":
+            months = rate_months;
+            break;
         case "CL":
         case "HO":
+        case "HU":
+        case "NG":
+        case "RB":
+        case "BB":
+        case "DA":
             months = allMonths;
             break;
         default:
@@ -145,7 +207,7 @@ export default function QuoteBoard(props) {
             rootMap.set(roots[i], getInitRootMap(roots[i]));
         }
         //console.log(rootMap.keys());
-        console.log(rootMap);
+        //console.log(rootMap);
         if (rootMap.size !== roots.length) console.error("rootMap ERROR -- lengths uneven!");
         return rootMap;
     }
@@ -154,13 +216,12 @@ export default function QuoteBoard(props) {
     // make sure the status data is updated in a manner that will trigger the children components to re-render
     React.useEffect(() => {
         WS.onmessage = (evt) => {
-            // console.log("new event: " + Date().split(" ")[4]);
-            // console.log(evt.data);
             const curEvt = JSON.parse(evt.data.replace(/'/g, "\""));
-            //console.table(status);
+            //console.log(typeof curEvt);
+            
             // check if current comdty exists in outer map
             if (status.has(curEvt.root)) {
-                console.log("🥸");
+                //console.log("🥸");
                 // check if current symbol/month exists in the current inner map
                 if (status.get(curEvt.root).has(curEvt.symbol)) {
                     // update status with clone to properly trigger re-render
@@ -169,8 +230,8 @@ export default function QuoteBoard(props) {
                                     low: curEvt.px_low, px: curEvt.px_last, set: curEvt.px_settle};
                     //clone[root_i].set(curEvt.symbol, newObj);
                     clone.get(curEvt.root).set(curEvt.symbol, newObj);
-                    console.log(`${curEvt.symbol} price update!`);
-                    console.table(newObj);
+                    //console.log(`${curEvt.symbol} price update!`);
+                    //console.table(newObj);
                     //updateStatus(clone);
                     setStatus(new Map(clone));
                 }
@@ -191,23 +252,5 @@ export default function QuoteBoard(props) {
             <QuoteBlock status={status.get(keys[5])}/>
         </div>
     );
-
-    // return(
-    //     <div>
-    //     <p>testing...</p>
-    //     <p>stateMap size: {stateMap.get("ZCK1").symbol}</p>
-    //         <ul>
-    //             {stateKeyAr.map((key) =>
-    //             <li key={key}>
-    //                 <h1>{stateMap.get(key).symbol}</h1>
-    //                 <p>{stateMap.get(key).high}</p>
-    //                 <p>{stateMap.get(key).open}</p>
-    //                 <p>{stateMap.get(key).low}</p>
-    //                 <p>{stateMap.get(key).px}</p>
-    //             </li>
-    //             )}
-    //         </ul>
-    //     </div>
-    //   );
 }
 

@@ -1,10 +1,6 @@
 const WebSocket = require('ws');
 var {spawn} = require('child_process')
-// require("child_process").spawn('python', ['./kinesisStream.py'], {
-//     cwd: process.cwd(),
-//     detached: true,
-//     stdio: "inherit"
-//   });
+
 // create websocket server
 // open "client.html" in a browser and see how the images flaps between two
 const wss = new WebSocket.Server({
@@ -25,7 +21,6 @@ console.log("Python process has pid:", py.pid)
 // listen for the new image
 rl.on("line", (line) => {
     //console.log("NEW DATA: ")
-    //xsconsole.log(typeof line)
     console.log(line)
     // broadcast the new binary image to all clients
     wss.clients.forEach((client) => {

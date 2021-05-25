@@ -40,7 +40,7 @@ class App extends React.Component {
         <header className="">
           <div>
               <div>
-                <QuoteBoard roots={["ZC", "ZW", "ZS", "ZM", "ZL", "CL"]} />
+                <QuoteBoard roots={["ZC", "ZS", "ZM", "ZL", "CL", "PL"]} />
               </div>
           </div>
         </header>
