@@ -231,7 +231,8 @@ export default function QuoteBoard(props) {
             //console.log(typeof curEvt);
             
             // check if current comdty exists in outer map
-            if (curEvt.type === "minute" && status.has(curEvt.root)) {
+            if (curEvt.type === "minute" && status.has(curEvt.root) && 
+                curEvt.px_last !== status.get(curEvt.root).get(curEvt.symbol).px) {
                 //console.log("🥸");
                 // check if current symbol/month exists in the current inner map
                 if (status.get(curEvt.root).has(curEvt.symbol)) {
@@ -244,7 +245,6 @@ export default function QuoteBoard(props) {
                     console.table(status.get(curEvt.root).get(curEvt.symbol))
                     console.table(newObj);
                     
-
                     clone.get(curEvt.root).set(curEvt.symbol, newObj);
                     setStatus(new Map(clone));
 
@@ -252,7 +252,6 @@ export default function QuoteBoard(props) {
                     console.log("🤌")
                 }
             }
-            
         }
     });
 
