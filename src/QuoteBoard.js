@@ -242,6 +242,11 @@ export default function QuoteBoard(props) {
                     const newObj = {symbol: curEvt.symbol, open: curEvt.session_open, high: curEvt.session_high, 
                                     low: curEvt.session_low, px: curEvt.px_last, set: curEvt.px_settle};
                     //clone[root_i].set(curEvt.symbol, newObj);
+                    console.log("👇" + curEvt.symbol);
+                    console.table(status.get(curEvt.root).get(curEvt.symbol))
+                    console.table(newObj);
+                    console.log("🤌")
+
                     clone.get(curEvt.root).set(curEvt.symbol, newObj);
                     //console.log(`${curEvt.symbol} price update!`);
                     //console.table(newObj);
@@ -269,7 +274,17 @@ export default function QuoteBoard(props) {
     //         <ul>{listItems}</ul>
     //     </div>
     // );
+
+    const blockStyle = {
+        marginTop: "0px",
+        marginBottom: "0px",
+        backgroundColor: "gray"
+    }
+
     return (
+
+        
+
         <div className="row">
             <div>
                 <div >

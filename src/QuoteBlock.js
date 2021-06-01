@@ -63,7 +63,8 @@ export default function QuoteBlock(props) {
 
     return (
         <div className="row" >
-            <ul style={{textAlign: "center"}}>{listItems}</ul>
+            <ul style={{textAlign: "center", 
+                        marginTop: "1px", marginBottom: "2px", marginRight: "2px", padding: "0px"}}>{listItems}</ul>
         </div>
     );
 }   

@@ -39,7 +39,7 @@ export default class Quote extends React.Component {
 
     
     render () {
-        console.log(`🤡 RENDER: ${this.props.symbol}`);
+        //console.log(`🤡 RENDER: ${this.props.symbol}`);
         return (
         <div className={this.getClassName()}>
             <h4 className="title">{this.props.symbol}</h4>
