@@ -37,10 +37,13 @@ class App extends React.Component {
 
     return (
       <div className="App">
-        <header className="">
+        <header>
           <div>
               <div>
-                <QuoteBoard roots={["ZC", "ZS", "ZM", "ZL", "CL", "PL"]} />
+                <QuoteBoard roots={["ZS", "ZM", "ZL", "ZC", "ZW", "ZO", 
+                                    "FC", "LE", "HE",
+                                    "CL", "NG", "RB", "HO",
+                                    "GC", "SI", "HG", "PL"]} />
               </div>
           </div>
         </header>

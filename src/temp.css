@@ -1,0 +1,39 @@
+.quoteGain1 {
+    width: 105px;
+    height: 120px;
+    margin: -1px;
+    border-style: ridge;
+    background-color: #CDFFCC;
+    font-family: 'Courier New', Courier, monospace;
+    text-align: left;
+  }
+  
+  .quoteGain2 {
+    width: 105px;
+    height: 120px;
+    margin: -1px;
+    border-style: ridge;
+    background-color: #B0F5AB;
+    font-family: 'Courier New', Courier, monospace;
+    text-align: left;
+  }
+  
+  .quoteGain3 {
+    width: 105px;
+    height: 120px;
+    margin: -1px;
+    border-style: ridge;
+    background-color: #90EF90;
+    font-family: 'Courier New', Courier, monospace;
+    text-align: left;
+  }
+  
+  .quoteGain4 {
+    width: 105px;
+    height: 120px;
+    margin: -1px;
+    border-style: ridge;
+    background-color: #3BCA6D;
+    font-family: 'Courier New', Courier, monospace;
+    text-align: left;
+  }

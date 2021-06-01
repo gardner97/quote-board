@@ -6,11 +6,9 @@ import time
 def handle_response(record_response):
     for r in record_response['Records']:
         try:
-            data = json.loads(r['Data'])
+            #data = json.loads(r['Data'])
             #if (data['type'] == 'minute'):
-            if (data['px_settle'] == None):
-                data['px_settle'] = 'NaN'
-            print(data)
+            print(r['Data'].decode())
         except Exception as e:
             print("error:", e)
             print("r:", r)

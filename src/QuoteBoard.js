@@ -3,24 +3,37 @@ import React from 'react'
 import QuoteBlock from './QuoteBlock'
 const _ = require('lodash');
 
+const NUM_QUOTES = 8;
+
 //      indices:  [ 0,  1,  2,  3,  4,  5,  6,  7,  8,  9, 10, 11 ]
 const allMonths = ['F','G','H','J','K','M','N','Q','U','V','X','Z'];
+//                 Jan,Feb,Mar,Apr,May,Jun,Jul,Aug,Sep,Oct,Nov,Dec
 
 // Trading Months (the months with available contracts to trade on CME for various commodities):
 const bean_months = ["F","H","K","N","Q","U","X"]; // ZS
 const bp_months =   ["F","H","K","N","Q","U","V","Z"] // ZM/ZL
-const corn_months = ["F","H","K","N","U","X","Z"] // ZC
-const wocs_months = ["H","K","N","U","Z"]; // ZW/KW/MW, ZO, CC, CT, KC, HG, SI
+const grain_months = ["H","K","N","U","Z"]; // ZC, ZW/KW/MW, ZO, CC, CT, KC, HG, SI
 const rlj_months =  ["F", "H", "K", "N", "U", "X"]; // RR, LB, JO
 const feed_months = ["F", "H", "J", "K", "Q", "U", "V", "X"]; // FC
-const live_months = ["G", "J", "M", "Q", "U", "V", "Z"]; // LC
+const live_months = ["G", "J", "M", "Q", "U", "V", "Z"]; // LE
 const lean_months = ["G", "J", "K", "M", "N", "Q", "V", "Z"]; // HE
 const gold_months = ["G","J","M","Q","V","Z"]; // GC
 const plat_months = ["F","J","N","V"]; // PL
 const rate_months = ["H", "M", "U", "Z"]; // DX, EU, BP, JU, SF, CD, AD, US, TY, TU, MB, FV, ED, UB
+// Categories
+const grains_cat = ["ZC", "ZW", "ZS", "ZM", "ZL", "KW", "MW", "ZO"];
+const metals_cat = ["GC", "SI", "PL", "PA", "HG"];
+const energy_cat = ["CL", "XB", "NG", "HO"];
+
+const grain_amt = 8;
+const meat_amt = 4;
+const energy_amt = 6;
+const metal_amt = 3;
+
 
 const D = new Date();
 const WS = new WebSocket('ws://localhost:8080');
+//const WS = new WebSocket('');
 
 
 // get month letter with year number (ex: May 2021 -> K1)
@@ -35,9 +48,9 @@ function getCurYear() {
 
 
 // get the current array index for the cur comdty's trading months ar
-function getCurMonthIndex(curMonthAr) {
-    return (curMonthAr.indexOf(allMonths[D.getMonth()]));
-}
+// function getCurMonthIndex(curMonthAr) {
+//     return (curMonthAr.indexOf(allMonths[D.getMonth()]));
+// }
 
 
 // get the next available contract month for the current comdty
@@ -45,7 +58,7 @@ function getNextContract(curAr, curDate) {
     const curM = curDate.charAt(0);
     const curY = parseInt(curDate.charAt(1));
     return (curAr.indexOf(curM) === curAr.length - 1 ? 
-        (curAr[0] + (curY+1)) : (curAr[curAr.indexOf(curM) + 1] + curY));
+        (curAr[0] + (curY === 9 ? 0 : curY + 1)) : (curAr[curAr.indexOf(curM) + 1] + curY));
 }
 
 
@@ -70,26 +83,21 @@ function getFront(comdtyAr, curDate) {
 }
 
 
-function getChangeColor(px_last, px_settle) {
-
-}
-
-
 // return the proper set of trading months for a given symbol
-// TODO: consider expanding to dynamically handle various numbers of months instead of fixed at 5
 function getTradingMonths(symbol) {
     let months;
+    let num_months;
     switch (symbol) {
         case "ZS":
             months = bean_months;
+            num_months = grain_amt;
             break;
         case "ZM":
         case "ZL":
             months = bp_months;
+            num_months = grain_amt;
             break;
         case "ZC":
-            months = corn_months;
-            break;
         case "ZW":
         case "KW":
         case "MW":
@@ -97,29 +105,39 @@ function getTradingMonths(symbol) {
         case "CC":
         case "CT":
         case "KC":
+            months = grain_months;
+            num_months = grain_amt;
+            break;
         case "HG":
         case "SI":
-            months = wocs_months;
+            months = grain_months;
+            num_months = metal_amt;
             break;
         case "RR":
         case "LB":
         case "JO":
             months = rlj_months;
+            num_months = 1;
             break;
         case "FC":
             months = feed_months;
+            num_months = meat_amt;
             break;
-        case "LC":
+        case "LE":
             months = live_months;
+            num_months = meat_amt;
             break;
         case "HE":
             months = lean_months;
+            num_months = meat_amt;
             break;
         case "GC":
             months = gold_months;
+            num_months = metal_amt;
             break;
         case "PL":
             months = plat_months;
+            num_months = metal_amt;
             break;
         case "DX":
         case "EU":
@@ -136,26 +154,36 @@ function getTradingMonths(symbol) {
         case "ED":
         case "UB":
             months = rate_months;
+            num_months = 1;
             break;
         case "CL":
         case "HO":
-        case "HU":
         case "NG":
         case "RB":
+            months = allMonths;
+            num_months = energy_amt;
+            break;
         case "BB":
         case "DA":
+        case "EX":
             months = allMonths;
+            num_months = 1;
             break;
         default:
             console.error("unknown trading months for :" + symbol);
             break;
     }
-    const m0 = getFront(months, getCurContract());
-    const m1 = getFront(months, getNextContract(months, m0));
-    const m2 = getFront(months, getNextContract(months, m1));
-    const m3 = getFront(months, getNextContract(months, m2));
-    const m4 = getFront(months, getNextContract(months, m3));
-    return [m0, m1, m2, m3, m4];
+    let tradingMonths = [];
+    let cur = getFront(months, getCurContract());
+    // for (let i = 0; i <= months.length; i++){
+    //     tradingMonths.push(cur);
+    //     cur = getNextContract(months, cur);
+    // }
+    for (let i = 0; i < num_months; i++) {
+        tradingMonths.push(cur);
+        cur = getNextContract(months, cur);
+    }
+    return tradingMonths;
 }
 
 
@@ -180,26 +208,10 @@ export default function QuoteBoard(props) {
     
     // status:  comdtysAr["ZC"]  ->  monthsMap<"ZCK1", quoteObj>  ->  quote{symbol: , open: , high: , low: , px: }
     const [status, setStatus] = React.useState(initStatus(props.roots));
-   
-    /*
-    handle issue of React being tricky with mutability and state updates. 
-    I'll need to pass a new copy (use "...") instead of the same reference in order to trigger a re-render ... I think
-    Tom, if you're familiar with how this works, some tips would be helpful 
-    */
-    // const updateStatus = (status) => {
-    //     setStatus({...status});
-    // }
+
 
     // Return an array to hold a map with all the data for various comdtys and their proper trading months
     function initStatus(roots) {
-        // const rootAr = [];
-        // for (let i = 0; i < roots.length; i++) {
-        //     rootAr.push(getInitRootMap(props.roots[i]));
-        // }
-        // if (rootAr.length !== roots.length) console.error("rootAr ERROR -- lengths uneven!")
-        // //console.table(rootAr);
-        // return rootAr;
-
         //console.table(roots);
         const rootMap = new Map();
         for (let i = 0; i < roots.length; i++) {
@@ -216,18 +228,19 @@ export default function QuoteBoard(props) {
     // make sure the status data is updated in a manner that will trigger the children components to re-render
     React.useEffect(() => {
         WS.onmessage = (evt) => {
-            const curEvt = JSON.parse(evt.data.replace(/'/g, "\""));
+            //const curEvt = JSON.parse(evt.data.replace(/'/g, "\""));
+            const curEvt = JSON.parse(evt.data);
             //console.log(typeof curEvt);
             
             // check if current comdty exists in outer map
-            if (status.has(curEvt.root)) {
+            if (curEvt.type === "minute" && status.has(curEvt.root)) {
                 //console.log("🥸");
                 // check if current symbol/month exists in the current inner map
                 if (status.get(curEvt.root).has(curEvt.symbol)) {
                     // update status with clone to properly trigger re-render
                     const clone = _.cloneDeep(status);
-                    const newObj = {symbol: curEvt.symbol, open: curEvt.px_open, high: curEvt.px_high, 
-                                    low: curEvt.px_low, px: curEvt.px_last, set: curEvt.px_settle};
+                    const newObj = {symbol: curEvt.symbol, open: curEvt.session_open, high: curEvt.session_high, 
+                                    low: curEvt.session_low, px: curEvt.px_last, set: curEvt.px_settle};
                     //clone[root_i].set(curEvt.symbol, newObj);
                     clone.get(curEvt.root).set(curEvt.symbol, newObj);
                     //console.log(`${curEvt.symbol} price update!`);
@@ -242,14 +255,58 @@ export default function QuoteBoard(props) {
 
     let keys = [...status.keys()];
 
-    return(
-        <div>
-            <QuoteBlock status={status.get(keys[0])}/>
-            <QuoteBlock status={status.get(keys[1])}/>
-            <QuoteBlock status={status.get(keys[2])}/>
-            <QuoteBlock status={status.get(keys[3])}/>
-            <QuoteBlock status={status.get(keys[4])}/>
-            <QuoteBlock status={status.get(keys[5])}/>
+    let blocks = [];
+    for (let i = 0; i < props.roots.length; i++) {
+        blocks.push(<QuoteBlock status={status.get(keys[i])}/>);
+    }
+
+    const listItems = blocks.map((block) =>
+        <li style={{listStyleType: "none"}}>{block}</li>
+    );
+
+    // return(
+    //     <div>
+    //         <ul>{listItems}</ul>
+    //     </div>
+    // );
+    return (
+        <div className="row">
+            <div>
+                <div >
+                    <QuoteBlock status={status.get(keys[0])} />
+                    <QuoteBlock status={status.get(keys[1])} />
+                    <QuoteBlock status={status.get(keys[2])} />
+                    <QuoteBlock status={status.get(keys[3])} />
+                    <QuoteBlock status={status.get(keys[4])} />
+                    <QuoteBlock status={status.get(keys[5])} />
+                </div>
+                <div className="row">
+                    <div>
+                        <QuoteBlock status={status.get(keys[6])} />
+                        <QuoteBlock status={status.get(keys[7])} />
+                    </div>
+                    <QuoteBlock status={status.get(keys[8])} />
+                </div>
+            </div>
+            <div>
+                <QuoteBlock status={status.get(keys[9])} />
+                <QuoteBlock status={status.get(keys[10])} />
+                <QuoteBlock status={status.get(keys[11])} />
+                <QuoteBlock status={status.get(keys[12])} />
+
+                <div className="row">
+                    <div>
+                        <QuoteBlock status={status.get(keys[13])} />
+                        <QuoteBlock status={status.get(keys[14])} />
+                        <QuoteBlock status={status.get(keys[15])} />
+                        <QuoteBlock status={status.get(keys[16])} />
+                    </div>
+                    <div>
+                        
+                    </div>
+                </div>
+            </div>
+            
         </div>
     );
 }
