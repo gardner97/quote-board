@@ -3,8 +3,6 @@ import React from 'react'
 import QuoteBlock from './QuoteBlock'
 const _ = require('lodash');
 
-const NUM_QUOTES = 8;
-
 //      indices:  [ 0,  1,  2,  3,  4,  5,  6,  7,  8,  9, 10, 11 ]
 const allMonths = ['F','G','H','J','K','M','N','Q','U','V','X','Z'];
 //                 Jan,Feb,Mar,Apr,May,Jun,Jul,Aug,Sep,Oct,Nov,Dec
@@ -27,7 +25,7 @@ const energy_cat = ["CL", "XB", "NG", "HO"];
 
 const grain_amt = 8;
 const meat_amt = 4;
-const energy_amt = 6;
+const energy_amt = 12;
 const metal_amt = 3;
 
 
@@ -242,16 +240,16 @@ export default function QuoteBoard(props) {
                     const newObj = {symbol: curEvt.symbol, open: curEvt.session_open, high: curEvt.session_high, 
                                     low: curEvt.session_low, px: curEvt.px_last, set: curEvt.px_settle};
                     //clone[root_i].set(curEvt.symbol, newObj);
-                    console.log("👇" + curEvt.symbol);
+                    console.log("👇 " + curEvt.symbol);
                     console.table(status.get(curEvt.root).get(curEvt.symbol))
                     console.table(newObj);
-                    console.log("🤌")
+                    
 
                     clone.get(curEvt.root).set(curEvt.symbol, newObj);
-                    //console.log(`${curEvt.symbol} price update!`);
-                    //console.table(newObj);
-                    //updateStatus(clone);
                     setStatus(new Map(clone));
+
+                    console.table(status.get(curEvt.root).get(curEvt.symbol))
+                    console.log("🤌")
                 }
             }
             
@@ -260,26 +258,20 @@ export default function QuoteBoard(props) {
 
     let keys = [...status.keys()];
 
-    let blocks = [];
-    for (let i = 0; i < props.roots.length; i++) {
-        blocks.push(<QuoteBlock status={status.get(keys[i])}/>);
-    }
+    // let blocks = [];
+    // for (let i = 0; i < props.roots.length; i++) {
+    //     blocks.push(<QuoteBlock status={status.get(keys[i])}/>);
+    // }
 
-    const listItems = blocks.map((block) =>
-        <li style={{listStyleType: "none"}}>{block}</li>
-    );
+    // const listItems = blocks.map((block) =>
+    //     <li style={{listStyleType: "none"}}>{block}</li>
+    // );
 
     // return(
     //     <div>
     //         <ul>{listItems}</ul>
     //     </div>
     // );
-
-    const blockStyle = {
-        marginTop: "0px",
-        marginBottom: "0px",
-        backgroundColor: "gray"
-    }
 
     return (
 
@@ -316,7 +308,7 @@ export default function QuoteBoard(props) {
                         <QuoteBlock status={status.get(keys[15])} />
                         <QuoteBlock status={status.get(keys[16])} />
                     </div>
-                    <div> MISC.
+                    <div> MISC...
                         
                     </div>
                 </div>
