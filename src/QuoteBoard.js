@@ -287,36 +287,36 @@ export default function QuoteBoard(props) {
 
         <div className="row">
             <div>
-                <div >
+                <div> GRAINS
                     <QuoteBlock status={status.get(keys[0])} />
                     <QuoteBlock status={status.get(keys[1])} />
                     <QuoteBlock status={status.get(keys[2])} />
                     <QuoteBlock status={status.get(keys[3])} />
                     <QuoteBlock status={status.get(keys[4])} />
                     <QuoteBlock status={status.get(keys[5])} />
-                </div>
+                </div> MEATS
                 <div className="row">
                     <div>
                         <QuoteBlock status={status.get(keys[6])} />
                         <QuoteBlock status={status.get(keys[7])} />
                     </div>
-                    <QuoteBlock status={status.get(keys[8])} />
-                </div>
+                        <QuoteBlock status={status.get(keys[8])} />
+                    </div>
             </div>
-            <div>
+            <div> ENERGIES
                 <QuoteBlock status={status.get(keys[9])} />
                 <QuoteBlock status={status.get(keys[10])} />
                 <QuoteBlock status={status.get(keys[11])} />
                 <QuoteBlock status={status.get(keys[12])} />
 
                 <div className="row">
-                    <div>
+                    <div> METALS
                         <QuoteBlock status={status.get(keys[13])} />
                         <QuoteBlock status={status.get(keys[14])} />
                         <QuoteBlock status={status.get(keys[15])} />
                         <QuoteBlock status={status.get(keys[16])} />
                     </div>
-                    <div>
+                    <div> MISC.
                         
                     </div>
                 </div>
