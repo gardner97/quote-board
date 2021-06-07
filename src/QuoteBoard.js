@@ -29,7 +29,6 @@ const meat_amt = 4;
 const energy_amt = 12;
 const metal_amt = 3;
 
-
 const D = new Date();
 //const WS = new WebSocket('ws://localhost:8080');
 var wsUrl = window.location.protocol === 'https:'
@@ -42,18 +41,14 @@ function getCurContract() {
     return (allMonths[D.getMonth()] + getCurYear());
 }
 
-
 function getCurYear() {
     return String(D.getFullYear()).substr(-1);
 }
-
-
 
 // get the current array index for the cur comdty's trading months ar
 // function getCurMonthIndex(curMonthAr) {
 //     return (curMonthAr.indexOf(allMonths[D.getMonth()]));
 // }
-
 
 // get the next available contract month for the current comdty
 function getNextContract(curAr, curDate) {
@@ -62,7 +57,6 @@ function getNextContract(curAr, curDate) {
     return (curAr.indexOf(curM) === curAr.length - 1 ? 
         (curAr[0] + (curY === 9 ? 0 : curY + 1)) : (curAr[curAr.indexOf(curM) + 1] + curY));
 }
-
 
 // Get the next closest front month for the current comdty
 function getFront(comdtyAr, curDate) {
@@ -80,12 +74,11 @@ function getFront(comdtyAr, curDate) {
                 m = allMonths[allMonths.indexOf(m) + 1];
             }
         }
-        return (m + y);
+        return (m + y); // (e.g 'K1' for 'May 2021')
     }
 }
 
-
-// return the proper set of trading months for a given symbol
+// return the proper set (varying lengths) of trading months for a given symbol
 function getTradingMonths(symbol) {
     let months;
     let num_months;
@@ -177,15 +170,15 @@ function getTradingMonths(symbol) {
             num_months = 1;
             break;
         default:
-            console.error("unknown trading months for :" + symbol);
+            console.error("unknown trading months for: " + symbol);
             break;
     }
     let tradingMonths = [];
     let cur = getFront(months, getCurContract());
-    if (energy_cat.includes(symbol)) {
+    if (energy_cat.includes(symbol)) { // hard-coded for energy front-month (need to fix later)
         cur = getNextContract(months, getCurContract());
     }
-
+    // determine following months from each comdty's set of valid months 
     for (let i = 0; i < num_months; i++) {
         tradingMonths.push(cur);
         cur = getNextContract(months, cur);
@@ -194,8 +187,8 @@ function getTradingMonths(symbol) {
 }
 
 
-// return the intilialized map for a given root
-// quotesMap<key: SYMBOL+MY (e.g. ZSK1) , val: {symbol: SYMBOL+MY, h: ? o: ?, l: ?, px: ?}>
+// return the intilialized map for a given root (grayed-out with '?'s for data)
+// quotesMap<key: SYMBOL+MY (e.g. ZCK1) , val: {symbol: SYMBOL+MY, h: ? o: ?, l: ?, px: ?}>
 function getInitRootMap(root) {
     const quotesMap = new Map();
     const tradingMonthsAr = getTradingMonths(root);
@@ -211,22 +204,17 @@ function getInitRootMap(root) {
 
 
 export default function QuoteBoard(props) {
-    //console.log(props);
-    
-    // status:  comdtysAr["ZC"]  ->  monthsMap<"ZCK1", quoteObj>  ->  quote{symbol: , open: , high: , low: , px: }
+    // status:  comdtysMap<"ZC", monthsMap>  ->  months<"ZCK1", quoteObj>  ->  quote{symbol: , open: , high: , low: , px: }
+    // status: map(root) of maps(symbols) of objects(price_data) 
     const [status, setStatus] = React.useState(initStatus(props.roots));
 
-
-    // Return an array to hold a map with all the data for various comdtys and their proper trading months
+    // Return a map to hold maps with all the data for various comdty contracys at proper trading months
     function initStatus(roots) {
-        //console.table(roots);
         const rootMap = new Map();
+        // Add each root to the primary map
         for (let i = 0; i < roots.length; i++) {
-            //console.log(roots[i]);
             rootMap.set(roots[i], getInitRootMap(roots[i]));
         }
-        //console.log(rootMap.keys());
-        //console.log(rootMap);
         if (rootMap.size !== roots.length) console.error("rootMap ERROR -- lengths uneven!");
         return rootMap;
     }
@@ -241,6 +229,8 @@ export default function QuoteBoard(props) {
                 if (status.get(curEvt.root).has(curEvt.symbol)) {
                     if (curEvt.px_last !== status.get(curEvt.root).get(curEvt.symbol).px) {
                         // update status with clone to properly trigger re-render
+                        // I found this cloneDeep solution on SO (the bottom comment in the link below)
+                        // https://stackoverflow.com/questions/47624142/right-way-to-clone-objects-arrays-during-setstate-in-react
                         const clone = _.cloneDeep(status);
                         const newObj = {symbol: curEvt.symbol, 
                                         open: curEvt.session_open, 
@@ -249,11 +239,12 @@ export default function QuoteBoard(props) {
                                         px: curEvt.px_last, 
                                         set: curEvt.px_settle};
                         clone.get(curEvt.root).set(curEvt.symbol, newObj);
-                        setStatus(clone);
+                        // I'm not sure if the children maps within status are being cloned properly
+                        setStatus(new Map(clone));
+                        //setStatus(clone);
 
                         console.table(newObj)
                     }
-                    
                 }
             }
         }
@@ -261,6 +252,7 @@ export default function QuoteBoard(props) {
 
     let keys = [...status.keys()];
 
+    // -- old solution for dynamic QuoteBoard instead of how I currently have it fixed in render()
     // let blocks = [];
     // for (let i = 0; i < props.roots.length; i++) {
     //     blocks.push(<QuoteBlock status={status.get(keys[i])}/>);
@@ -277,10 +269,10 @@ export default function QuoteBoard(props) {
     // );
 
     return (
-         
         <div className="row" style={{marginTop: "5px", marginLeft: "5px"}}>
             <div>
-                <div> 
+                <div>
+                    {/* Grains */}
                     <QuoteBlock status={status.get(keys[0])} />
                     <QuoteBlock status={status.get(keys[1])} />
                     <QuoteBlock status={status.get(keys[2])} />
@@ -290,10 +282,12 @@ export default function QuoteBoard(props) {
                 </div> 
                 <div className="row" style={{marginTop: "5px"}}>
                     <div style={{marginRight: "3px"}}>
+                        {/* Feeder/Live Cattle */}
                         <QuoteBlock status={status.get(keys[6])} />
                         <QuoteBlock status={status.get(keys[7])} />
                     </div>
                     <div>
+                        {/* Lean Hogs / Lumber */}
                         <QuoteBlock status={status.get(keys[8])} />
                         <QuoteBlock status={status.get(keys[9])} />
                     </div>
@@ -301,6 +295,7 @@ export default function QuoteBoard(props) {
             </div>
             <div> 
                 <div style={{marginLeft: "4px"}}>
+                    {/* Energies */}
                     <QuoteBlock status={status.get(keys[10])} />
                     <QuoteBlock status={status.get(keys[11])} />
                     <QuoteBlock status={status.get(keys[12])} />
@@ -309,6 +304,7 @@ export default function QuoteBoard(props) {
 
                 <div className="row" style={{marginLeft: "5px"}}>
                     <div style={{marginTop: "5px"}}>
+                        {/* Metals */}
                         <QuoteBlock status={status.get(keys[14])} />
                         <QuoteBlock status={status.get(keys[15])} />
                         <QuoteBlock status={status.get(keys[16])} />
@@ -316,6 +312,7 @@ export default function QuoteBoard(props) {
                     </div>
                     <div style={{marginLeft: "5px", marginTop: "5px"}}>
                         <div className="row">
+                            {/* Currencies */}
                             <QuoteBlock status={status.get(keys[18])} />
                             <QuoteBlock status={status.get(keys[19])} />
                             <QuoteBlock status={status.get(keys[20])} />
@@ -327,6 +324,7 @@ export default function QuoteBoard(props) {
                             <QuoteBlock status={status.get(keys[26])} />
                         </div>
                         <div className="row">
+                            {/* Bonds */}
                             <QuoteBlock status={status.get(keys[27])} />
                             <QuoteBlock status={status.get(keys[28])} />
                             <QuoteBlock status={status.get(keys[29])} />
@@ -335,19 +333,20 @@ export default function QuoteBoard(props) {
                             <QuoteBlock status={status.get(keys[32])} />
                         </div>
                         <div className="row">
+                            {/* Equity Indexes */}
                             <QuoteBlock status={status.get(keys[33])} />
                             <QuoteBlock status={status.get(keys[34])} />
                             <QuoteBlock status={status.get(keys[35])} />
                             <QuoteBlock status={status.get(keys[36])} />
                         </div>
                         <div className="row">
+                            {/* Crypto */}
                             <QuoteBlock status={status.get(keys[37])} />
                             <QuoteBlock status={status.get(keys[38])} />
                         </div>
                     </div>
                 </div>
             </div>
-            
         </div>
     );
 }
