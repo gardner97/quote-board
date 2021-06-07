@@ -42,101 +42,114 @@
 }
 
 .quoteDefault {
-  width: 105px;
-  height: 120px;
+  width: 70px;
+  height: 100px;
   margin: -1px;
   border-style: groove;
   background-color: lightgrey;
-  font-family: 'Courier New', Courier, monospace;
+  font-family: Arial;
   text-align: left;
+  font-size: small;
 }
 
 .quoteLoss1 {
-  width: 105px;
-  height: 120px;
+  width: 70px;
+  height: 100px;
   margin: -1px;
   border-style: ridge;
   /* background-color: #FFCCCB; */
   background-color: #ffcccc;
-  font-family: 'Courier New', Courier, monospace;
+  font-family: Arial;
   text-align: left;
+  font-size: small;
 }
 
 .quoteLoss2 {
-  width: 105px;
-  height: 120px;
+  width: 70px;
+  height: 100px;
   margin: -1px;
   border-style: ridge;
   /* background-color: #FC94A1; */
   background-color: #ff6666;
-  font-family: 'Courier New', Courier, monospace;
+  font-family: Arial;
   text-align: left;
+  font-size: small;
 }
 
 .quoteLoss3 {
-  width: 105px;
-  height: 120px;
+  width: 70px;
+  height: 100px;
   margin: -1px;
   border-style: ridge;
   /* background-color: #FC6C85; */
   background-color: #f41804;
-  font-family: 'Courier New', Courier, monospace;
+  font-family: Arial;
   text-align: left;
+  font-size: small;
 }
 
 .quoteLoss4 {
-  width: 105px;
-  height: 120px;
+  width: 70px;
+  height: 100px;
   margin: -1px;
   border-style: ridge;
   /* background-color: #ED2938; */
   background-color: #ae1103;
-  font-family: 'Courier New', Courier, monospace;
+  font-family: Arial;
   text-align: left;
+  font-size: small;
 }
 
 .quoteGain1 {
-  width: 105px;
-  height: 120px;
+  width: 70px;
+  height: 100px;
   margin: -1px;
   border-style: ridge;
   /* background-color: #CDFFCC; */
-  background-color: #cce5ff;
-  font-family: 'Courier New', Courier, monospace;
+  /* background-color: #cce5ff; */
+  background-color: #cadeef;
+  font-family: Arial;
   text-align: left;
+  font-size: small;
 }
 
 .quoteGain2 {
-  width: 105px;
-  height: 120px;
+  width: 70px;
+  height: 100px;
   margin: -1px;
   border-style: ridge;
   /* background-color: #B0F5AB; */
-  background-color: #a2d1e6;
-  font-family: 'Courier New', Courier, monospace;
+  /* background-color: #a2d1e6; */
+  background-color: #9bd4e4;
+  font-family: Arial;
   text-align: left;
+  font-size: small;
 }
 
 .quoteGain3 {
-  width: 105px;
-  height: 120px;
+  width: 70px;
+  height: 100px;
   margin: -1px;
   border-style: ridge;
   /* background-color: #90EF90; */
-  background-color: #769fca;
-  font-family: 'Courier New', Courier, monospace;
+  /* background-color: #769fca; */
+  background-color: #39ace7;
+  font-family: Arial;
   text-align: left;
+  font-size: small;
 }
 
 .quoteGain4 {
-  width: 105px;
-  height: 120px;
+  width: 70px;
+  height: 100px;
   margin: -1px;
   border-style: ridge;
   /* background-color: #3BCA6D; */
-  background-color: #0080ff;
-  font-family: 'Courier New', Courier, monospace;
+  /* background-color: #0080ff; */
+  background-color: #0784b5;
+  font-family: Arial;
   text-align: left;
+  font-size: small;
 }
 
 
@@ -146,6 +159,7 @@
   flex-wrap: wrap;
   list-style-type: none;
 }
+
 
 .column {
   display: flex;
@@ -160,9 +174,9 @@
 
 .innerData {
   display: block;
-  text-align: left;
+  text-align: center;
   margin-top: -10px;
   margin-bottom: -10px;
   margin-left: 5px;
-  margin-right: -10px;
+  margin-right: 5px;
 }

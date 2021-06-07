@@ -13,11 +13,11 @@ wss.on("connection", function connection(ws) {
 });
 
 // spawn python child process
-const py = spawn("python", ["kinesisStream.py"]);
+const py2 = spawn("python",["dummyServer.py"]);
 
-const rl  = require('readline').createInterface({ input: py.stdout });
+const rl  = require('readline').createInterface({ input: py2.stdout });
 
-console.log("Python process has pid:", py.pid)
+console.log("Python process has pid:", py2.pid)
 
 // listen for the new image
 rl.on("line", (line) => {
@@ -30,6 +30,7 @@ rl.on("line", (line) => {
     });
 });
 
-py.stderr.on("data", (data) => {
+
+py2.stderr.on("data", (data) => {
     console.error(data.toString());
 });

@@ -12,16 +12,17 @@ const bean_months = ["F","H","K","N","Q","U","X"]; // ZS
 const bp_months =   ["F","H","K","N","Q","U","V","Z"] // ZM/ZL
 const grain_months = ["H","K","N","U","Z"]; // ZC, ZW/KW/MW, ZO, CC, CT, KC, HG, SI
 const rlj_months =  ["F", "H", "K", "N", "U", "X"]; // RR, LB, JO
-const feed_months = ["F", "H", "J", "K", "Q", "U", "V", "X"]; // FC
+const feed_months = ["F", "H", "J", "K", "Q", "U", "V", "X"]; // GF
+const wood_months = ["F", "H", "K", "N", "U", "V"]; //LBS
 const live_months = ["G", "J", "M", "Q", "U", "V", "Z"]; // LE
 const lean_months = ["G", "J", "K", "M", "N", "Q", "V", "Z"]; // HE
 const gold_months = ["G","J","M","Q","V","Z"]; // GC
 const plat_months = ["F","J","N","V"]; // PL
-const rate_months = ["H", "M", "U", "Z"]; // DX, EU, BP, JU, SF, CD, AD, US, TY, TU, MB, FV, ED, UB
+//const rate_months = ["H", "M", "U", "Z"]; // DX, EU, BP, JU, SF, CD, AD, US, TY, TU, MB, FV, ED, UB
 // Categories
-const grains_cat = ["ZC", "ZW", "ZS", "ZM", "ZL", "KW", "MW", "ZO"];
-const metals_cat = ["GC", "SI", "PL", "PA", "HG"];
-const energy_cat = ["CL", "XB", "NG", "HO"];
+//const grains_cat = ["ZC", "ZW", "ZS", "ZM", "ZL", "KW", "MW", "ZO"];
+//const metals_cat = ["GC", "SI", "PL", "PA", "HG"];
+const energy_cat = ["CL", "RB", "NG", "HO"];
 
 const grain_amt = 8;
 const meat_amt = 4;
@@ -30,19 +31,22 @@ const metal_amt = 3;
 
 
 const D = new Date();
-const WS = new WebSocket('ws://localhost:8080');
-//const WS = new WebSocket('');
-
-
+//const WS = new WebSocket('ws://localhost:8080');
+var wsUrl = window.location.protocol === 'https:'
+	  ? "wss://www.contango.net:9534/"
+	  : "ws://www.contango.net:9533/"
+const WS = new WebSocket(wsUrl)
+ 
 // get month letter with year number (ex: May 2021 -> K1)
 function getCurContract() {
-    return (allMonths[D.getMonth() + 1] + getCurYear());
+    return (allMonths[D.getMonth()] + getCurYear());
 }
 
 
 function getCurYear() {
     return String(D.getFullYear()).substr(-1);
 }
+
 
 
 // get the current array index for the cur comdty's trading months ar
@@ -117,7 +121,7 @@ function getTradingMonths(symbol) {
             months = rlj_months;
             num_months = 1;
             break;
-        case "FC":
+        case "GF":
             months = feed_months;
             num_months = meat_amt;
             break;
@@ -129,6 +133,10 @@ function getTradingMonths(symbol) {
             months = lean_months;
             num_months = meat_amt;
             break;
+        case "LBS":
+            months = wood_months;
+            num_months = meat_amt;
+            break;
         case "GC":
             months = gold_months;
             num_months = metal_amt;
@@ -137,23 +145,6 @@ function getTradingMonths(symbol) {
             months = plat_months;
             num_months = metal_amt;
             break;
-        case "DX":
-        case "EU":
-        case "BP":
-        case "JU":
-        case "SF":
-        case "CD":
-        case "AD":
-        case "US":
-        case "TY":
-        case "TU":
-        case "MB":
-        case "FV":
-        case "ED":
-        case "UB":
-            months = rate_months;
-            num_months = 1;
-            break;
         case "CL":
         case "HO":
         case "NG":
@@ -161,9 +152,27 @@ function getTradingMonths(symbol) {
             months = allMonths;
             num_months = energy_amt;
             break;
-        case "BB":
-        case "DA":
-        case "EX":
+        case "DX":
+        case "6E":
+        case "6J":
+        case "RMB":
+        case "6B":
+        case "6C":
+        case "6A":
+        case "6L":
+        case "6M":
+        case "ZT":
+        case "Z3N":
+        case "ZF":
+        case "ZN":
+        case "TN":
+        case "ZB":
+        case "ES":
+        case "YM":
+        case "NQ":
+        case "RTY":
+        case "BTC":
+        case "ETH":
             months = allMonths;
             num_months = 1;
             break;
@@ -173,10 +182,10 @@ function getTradingMonths(symbol) {
     }
     let tradingMonths = [];
     let cur = getFront(months, getCurContract());
-    // for (let i = 0; i <= months.length; i++){
-    //     tradingMonths.push(cur);
-    //     cur = getNextContract(months, cur);
-    // }
+    if (energy_cat.includes(symbol)) {
+        cur = getNextContract(months, getCurContract());
+    }
+
     for (let i = 0; i < num_months; i++) {
         tradingMonths.push(cur);
         cur = getNextContract(months, cur);
@@ -222,34 +231,29 @@ export default function QuoteBoard(props) {
         return rootMap;
     }
 
-    // TODO: expannd to handle incoming web socket messages and then update the proper pieces of status
     // make sure the status data is updated in a manner that will trigger the children components to re-render
     React.useEffect(() => {
         WS.onmessage = (evt) => {
-            //const curEvt = JSON.parse(evt.data.replace(/'/g, "\""));
             const curEvt = JSON.parse(evt.data);
-            //console.log(typeof curEvt);
-            
             // check if current comdty exists in outer map
-            if (curEvt.type === "minute" && status.has(curEvt.root) && 
-                curEvt.px_last !== status.get(curEvt.root).get(curEvt.symbol).px) {
-                //console.log("🥸");
+            if (curEvt.type === "minute" && status.has(curEvt.root)) {
                 // check if current symbol/month exists in the current inner map
                 if (status.get(curEvt.root).has(curEvt.symbol)) {
-                    // update status with clone to properly trigger re-render
-                    const clone = _.cloneDeep(status);
-                    const newObj = {symbol: curEvt.symbol, open: curEvt.session_open, high: curEvt.session_high, 
-                                    low: curEvt.session_low, px: curEvt.px_last, set: curEvt.px_settle};
-                    //clone[root_i].set(curEvt.symbol, newObj);
-                    console.log("👇 " + curEvt.symbol);
-                    console.table(status.get(curEvt.root).get(curEvt.symbol))
-                    console.table(newObj);
-                    
-                    clone.get(curEvt.root).set(curEvt.symbol, newObj);
-                    setStatus(new Map(clone));
+                    if (curEvt.px_last !== status.get(curEvt.root).get(curEvt.symbol).px) {
+                        // update status with clone to properly trigger re-render
+                        const clone = _.cloneDeep(status);
+                        const newObj = {symbol: curEvt.symbol, 
+                                        open: curEvt.session_open, 
+                                        high: curEvt.session_high, 
+                                        low: curEvt.session_low, 
+                                        px: curEvt.px_last, 
+                                        set: curEvt.px_settle};
+                        clone.get(curEvt.root).set(curEvt.symbol, newObj);
+                        setStatus(clone);
 
-                    console.table(status.get(curEvt.root).get(curEvt.symbol))
-                    console.log("🤌")
+                        console.table(newObj)
+                    }
+                    
                 }
             }
         }
@@ -273,42 +277,73 @@ export default function QuoteBoard(props) {
     // );
 
     return (
-
-        
-
-        <div className="row">
+         
+        <div className="row" style={{marginTop: "5px", marginLeft: "5px"}}>
             <div>
-                <div> GRAINS
+                <div> 
                     <QuoteBlock status={status.get(keys[0])} />
                     <QuoteBlock status={status.get(keys[1])} />
                     <QuoteBlock status={status.get(keys[2])} />
                     <QuoteBlock status={status.get(keys[3])} />
                     <QuoteBlock status={status.get(keys[4])} />
                     <QuoteBlock status={status.get(keys[5])} />
-                </div> MEATS
-                <div className="row">
-                    <div>
+                </div> 
+                <div className="row" style={{marginTop: "5px"}}>
+                    <div style={{marginRight: "3px"}}>
                         <QuoteBlock status={status.get(keys[6])} />
                         <QuoteBlock status={status.get(keys[7])} />
                     </div>
+                    <div>
                         <QuoteBlock status={status.get(keys[8])} />
+                        <QuoteBlock status={status.get(keys[9])} />
                     </div>
+                </div>
             </div>
-            <div> ENERGIES
-                <QuoteBlock status={status.get(keys[9])} />
-                <QuoteBlock status={status.get(keys[10])} />
-                <QuoteBlock status={status.get(keys[11])} />
-                <QuoteBlock status={status.get(keys[12])} />
+            <div> 
+                <div style={{marginLeft: "4px"}}>
+                    <QuoteBlock status={status.get(keys[10])} />
+                    <QuoteBlock status={status.get(keys[11])} />
+                    <QuoteBlock status={status.get(keys[12])} />
+                    <QuoteBlock status={status.get(keys[13])} />
+                </div>
 
-                <div className="row">
-                    <div> METALS
-                        <QuoteBlock status={status.get(keys[13])} />
+                <div className="row" style={{marginLeft: "5px"}}>
+                    <div style={{marginTop: "5px"}}>
                         <QuoteBlock status={status.get(keys[14])} />
                         <QuoteBlock status={status.get(keys[15])} />
                         <QuoteBlock status={status.get(keys[16])} />
+                        <QuoteBlock status={status.get(keys[17])} />
                     </div>
-                    <div> MISC...
-                        
+                    <div style={{marginLeft: "5px", marginTop: "5px"}}>
+                        <div className="row">
+                            <QuoteBlock status={status.get(keys[18])} />
+                            <QuoteBlock status={status.get(keys[19])} />
+                            <QuoteBlock status={status.get(keys[20])} />
+                            <QuoteBlock status={status.get(keys[21])} />
+                            <QuoteBlock status={status.get(keys[22])} />
+                            <QuoteBlock status={status.get(keys[23])} />
+                            <QuoteBlock status={status.get(keys[24])} />
+                            <QuoteBlock status={status.get(keys[25])} />
+                            <QuoteBlock status={status.get(keys[26])} />
+                        </div>
+                        <div className="row">
+                            <QuoteBlock status={status.get(keys[27])} />
+                            <QuoteBlock status={status.get(keys[28])} />
+                            <QuoteBlock status={status.get(keys[29])} />
+                            <QuoteBlock status={status.get(keys[30])} />
+                            <QuoteBlock status={status.get(keys[31])} />
+                            <QuoteBlock status={status.get(keys[32])} />
+                        </div>
+                        <div className="row">
+                            <QuoteBlock status={status.get(keys[33])} />
+                            <QuoteBlock status={status.get(keys[34])} />
+                            <QuoteBlock status={status.get(keys[35])} />
+                            <QuoteBlock status={status.get(keys[36])} />
+                        </div>
+                        <div className="row">
+                            <QuoteBlock status={status.get(keys[37])} />
+                            <QuoteBlock status={status.get(keys[38])} />
+                        </div>
                     </div>
                 </div>
             </div>

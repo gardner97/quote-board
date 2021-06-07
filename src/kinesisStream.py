@@ -17,6 +17,7 @@ def handle_response(record_response):
 #my_stream_name = 'cooper-stream'
 #my_stream_name = 'intraday-kinesis'
 my_stream_name = 'intraday-data'
+# my_stream_name = 'ws://contango.net:9533/'
 
 kinesis_client = boto3.client('kinesis')
 

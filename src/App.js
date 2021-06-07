@@ -41,9 +41,14 @@ class App extends React.Component {
           <div>
               <div>
                 <QuoteBoard roots={["ZS", "ZM", "ZL", "ZC", "ZW", "ZO", 
-                                    "FC", "LE", "HE",
+                                    "GF", "LE", "HE", "LBS",
                                     "CL", "NG", "RB", "HO",
-                                    "GC", "SI", "HG", "PL"]} />
+                                    "GC", "SI", "HG", "PL",
+                                    "DX", "6E", "6J", "RMB", "6B", "6C", "6A", "6L", "6M",
+                                    "ZT", "Z3N", "ZF", "ZN", "TN", "ZB",
+                                    "ES", "YM", "NQ", "RTY",
+                                    "BTC", "ETH"
+                                  ]} />
               </div>
           </div>
         </header>
